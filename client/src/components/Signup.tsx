@@ -20,8 +20,8 @@ const Signup = () => {
 
   return (
     <main className='signup'>
-      <form className='signup__form' onSubmit={handleSubmit}>
-        <h2 className='signup__title'>Create an account</h2>
+      <form className='flex flex-col items-center' onSubmit={handleSubmit}>
+        <h2 className='text-2xl font-bold'>Create an account</h2>
         <label htmlFor='email'>Email Address</label>
         <input
           id='email'
@@ -30,6 +30,7 @@ const Signup = () => {
           required
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+          className='border border-gray-500 w-1/3'
         />
         <label htmlFor='username'>Username</label>
         <input
@@ -39,6 +40,7 @@ const Signup = () => {
           type='text'
           value={username}
           onChange={(e) => setUsername(e.target.value)}
+          className='border border-gray-500 w-1/3'
         />
         <label htmlFor='password'>Password</label>
         <input
@@ -48,9 +50,10 @@ const Signup = () => {
           required
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          className='border border-gray-500 w-1/3'
         />
-        <button className='signupButton'>REGISTER</button>
-        <p style={{ textAlign: "center", marginTop: "30px" }}>
+        <button className='text-xl mt-4'>REGISTER</button>
+        <p className='mt-8'>
           Already have an account?{" "}
           <Link className='link' to='/'>
             Sign in
