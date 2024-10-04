@@ -1,6 +1,7 @@
 import React from "react";
 import { Route, createBrowserRouter, createRoutesFromElements, RouterProvider } from 'react-router-dom';
 import './App.css'
+import {NavRoutes} from "./utils/NavRoutes.ts";
 import Dashboard from "./components/Dashboard";
 import Login from "./components/Login";
 import Signup from "./components/Signup";
@@ -12,9 +13,10 @@ import "react-toastify/dist/ReactToastify.css";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
-    <Route path="/">
+    <Route path={NavRoutes.home}>
       <Route index element={<Login />} />
-      <Route path="/register" element={<Signup />} />
+      <Route path={NavRoutes.register} element={<Signup />} />
+      <Route path={NavRoutes.dashboard} element={<Dashboard />} />
     </Route>
   )
 )
