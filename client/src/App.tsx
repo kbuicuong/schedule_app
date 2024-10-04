@@ -12,10 +12,9 @@ import "react-toastify/dist/ReactToastify.css";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
-    <Route path="/" element={<Login />}>
-      {/*<Route index element={<Home />} />*/}
-      {/*<Route path="login" element={<Login />} />*/}
-      {/*<Route path="register" element={<Register />} />*/}
+    <Route path="/">
+      <Route index element={<Login />} />
+      <Route path="/register" element={<Signup />} />
     </Route>
   )
 )

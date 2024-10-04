@@ -17,28 +17,28 @@ const Login = () => {
 
   return (
     <main className='login'>
-      <form className='login__form' onSubmit={handleSubmit}>
-        <h2 className='login__title '>Log into your account</h2>
-        <label htmlFor='username'>Username</label>
+      <form className='flex flex-col items-center' onSubmit={handleSubmit}>
+        <h2 className='text-2xl font-bold'>Log into your account</h2>
+        <label htmlFor='username' className='mt-4 mb-2'>Username</label>
         <input
           id='username'
           name='username'
           type='text'
           value={username}
           onChange={(e) => setUsername(e.target.value)}
-          className='username'
+          className='border border-gray-500 w-1/3'
         />
-        <label htmlFor='password'>Password</label>
+        <label htmlFor='password' className='mt-4 mb-2'>Password</label>
         <input
           id='password'
           type='password'
           name='password'
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className='password'
+          className='border border-gray-500 w-1/3'
         />
-        <button className='loginButton'>LOG IN</button>
-        <p style={{ textAlign: "center", marginTop: "30px" }}>
+        <button className='text-xl mt-4'>LOG IN</button>
+        <p className='mt-8'>
           Don't have an account?{" "}
           <Link className='link' to='/register'>
             Create one
