@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "esModuleInterop": true,
+    "target": "es2021",
+    "moduleResolution": "node",
+    "sourceMap": true,
+    "outDir": "./dist",
+    "strict": true,
+    //"skipLibCheck": true,
+    //"noImplicitAny": true,
+    //"strictNullChecks": true,
+    //"strictFunctionTypes": true,
+    //"noImplicitReturns": true
+  },
+  "include": ["src/**/*.ts",
+    "src/index.ts"
+  ],
+  "exclude": ["node_modules"],
+  "lib": ["es2021"]
+}
