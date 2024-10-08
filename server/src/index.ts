@@ -1,12 +1,15 @@
 import express, {Express, Request, Response} from "express";
+import cors from "cors";
+import config from '../config';
+import scheduleRoute from "./Routes/scheduleRoute";
 
 const app: Express = express();
-const port: number = 4000;
+app.use(cors());
+app.use(express.json());
 
-app.get("/api", (req: Request, res: Response) => {
-  res.send("Hello, TypeScript Node.js Server!");
-});
+//routes
+app.use('/api', scheduleRoute);
 
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
+app.listen(config.port, () => {
+  console.log(`Server is running on port ${config.hostUrl}`);
 });
