@@ -24,9 +24,27 @@ export const createSchedule = async (req:Request, res:Response, next:NextFunctio
       throw new Error('All fields are required');
     }
     // await addDoc(collection(db, 'schedules'), data);
-    const docId = `${data.start}.${data.end}`;
-    await setDoc(doc(db, 'schedules', docId), data);
-    res.status(201).send('schedule created successfully');
+
+    // Check for overlapping schedules
+    const schedules = await getDocs(collection(db, 'schedules'));
+    const overlapExists = schedules.docs.some(doc => {
+      const schedule = doc.data();
+      const existingStart = new Date(schedule.start).getTime();
+      const existingEnd = new Date(schedule.end).getTime();
+      const newStart = new Date(data.start).getTime();
+      const newEnd = new Date(data.end).getTime();
+
+      return (newStart < existingEnd && newEnd > existingStart);
+    });
+
+    if (overlapExists) {
+      res.status(400).send({message: 'A schedule with overlapping time already exists'});
+    }else{
+      const docId = `${data.start}.${data.end}`;
+      await setDoc(doc(db, 'schedules', docId), data);
+      res.status(201).send('schedule created successfully');
+    }
+
   } catch (error) {
     if (error instanceof Error) {
       res.status(400).send(error.message);
@@ -48,7 +66,7 @@ export const getSchedules = async (req:Request, res:Response, next:NextFunction)
           doc.id,
           doc.data().event_id,
           doc.data().title,
-          doc.data().description,
+          doc.data().subtitle,
           doc.data().start,
           doc.data().end
         );
@@ -87,7 +105,7 @@ export const getSchedule = async (req:Request, res:Response, next:NextFunction) 
 
 export const updateSchedule = async (req:Request, res:Response, next:NextFunction) => {
   try {
-    const id = req.params.event_id;
+    const id = req.params.id;
     const data = req.body;
     const schedule = doc(db, 'schedules', id);
     await updateDoc(schedule, data);
@@ -101,11 +119,25 @@ export const updateSchedule = async (req:Request, res:Response, next:NextFunctio
   }
 };
 
-export const deleteSchedule = async (req:Request, res:Response, next:NextFunction) => {
+export const deleteSchedule = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const id = req.params.event_id;
-    await deleteDoc(doc(db, 'schedules', id));
-    res.status(200).send('schedule deleted successfully');
+    const eventId = req.params.id;
+    const schedulesRef = collection(db, 'schedules');
+    const querySnapshot = await getDocs(schedulesRef);
+
+    let docIdToDelete = null;
+    querySnapshot.forEach((doc) => {
+      if (doc.data().event_id === Number(eventId)) {
+        docIdToDelete = doc.id;
+      }
+    });
+
+    if (docIdToDelete) {
+      await deleteDoc(doc(db, 'schedules', docIdToDelete));
+      res.status(200).send('Schedule deleted successfully');
+    } else {
+      res.status(404).send('Schedule not found');
+    }
   } catch (error) {
     if (error instanceof Error) {
       res.status(400).send(error.message);
