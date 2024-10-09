@@ -1,23 +1,51 @@
-import React, { useState, useEffect } from "react";
-import TimezoneSelect from "react-timezone-select";
-import { useNavigate } from "react-router-dom";
+import React, {useState, useEffect} from "react";
 
-import { Scheduler } from "@aldabil/react-scheduler";
+import {Scheduler} from "@aldabil/react-scheduler";
 import {
   EventActions,
   ProcessedEvent
 } from "@aldabil/react-scheduler/types";
-import { EVENTS } from "./Events";
+import {useQueryClient, useMutation} from "react-query";
+import axios, {AxiosError} from "axios";
+
+const getSchedules = async () => {
+  const response = await axios.get(
+    "http://localhost:5000/api/schedule",
+  );
+  return response.data;
+};
+
+type ScheduleType = {
+  event_id: string|number;
+  title: string;
+  subtitle: string;
+  start: string | Date;
+  end: string | Date;
+};
 
 const Dashboard = () => {
-  const fetchRemote = async (query: any): Promise<ProcessedEvent[]> => {
-    console.log({ query });
-    /**Simulate fetchin remote data */
-    return new Promise((res) => {
-      setTimeout(() => {
-        res(EVENTS);
-      }, 3000);
-    });
+  const queryClient = useQueryClient();
+  const mutationPost = useMutation((newSchedule:ScheduleType) =>
+    axios.post("http://localhost:5000/api/schedule/new", newSchedule)
+  );
+  // const mutationPut = useMutation((newPost) =>
+  //   axios.put(`https://jsonplaceholder.typicode.com/schedule/${newPost.id}`, newPost),
+  // );
+  // const mutationDelete = useMutation((newPost) =>
+  //   axios.delete("https://jsonplaceholder.typicode.com/posts", newPost),
+  // );
+
+  const fetchRemote = async (query) => {
+    const data:ScheduleType[] = await queryClient.fetchQuery("events", getSchedules)
+    const dataFormatted = data.map((d) => ({
+      event_id: d.event_id,
+      title: d.title,
+      start: new Date(d.start),
+      end: new Date(d.end),
+      subtitle: d.subtitle
+    }));
+    console.log('data', data);
+    return dataFormatted;
   };
 
   const handleConfirm = async (
@@ -40,20 +68,24 @@ const Dashboard = () => {
         /** PUT event to remote DB */
       } else if (action === "create") {
         /**POST event to remote DB */
+        mutationPost.mutate(({
+          event_id: event.event_id || Math.random(),
+          title: event.title as string,
+          start: event.start,
+          end: event.end,
+          subtitle: event.subtitle as string
+        }));
       }
 
-      const isFail = Math.random() > 0.6;
-      // Make it slow just for testing
-      setTimeout(() => {
-        if (isFail) {
-          rej("Ops... Faild");
-        } else {
-          res({
-            ...event,
-            event_id: event.event_id || Math.random()
-          });
-        }
-      }, 3000);
+      const isFail = mutationPost.isError;
+      if (isFail) {
+        rej("Ops... Faild");
+      } else {
+        res({
+          ...event,
+          event_id: event.event_id || Math.random()
+        });
+      }
     });
   };
 
@@ -66,9 +98,9 @@ const Dashboard = () => {
     });
   };
 
-  const handleEventClick = (event: ProcessedEvent) => {
-    console.log("handleEventClick");
-  };
+  // const handleEventClick = (event: ProcessedEvent) => {
+  //   console.log("handleEventClick");
+  // };
 
   return (
     <div>
@@ -77,7 +109,7 @@ const Dashboard = () => {
         onConfirm={handleConfirm}
         onDelete={handleDelete}
         // onEventClick={handleEventClick}
-        editable={false}
+        // editable={false}
         // deletable={false}
         // disableViewer
         view="week"
