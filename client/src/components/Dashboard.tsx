@@ -48,7 +48,7 @@ const Dashboard = () => {
       end: new Date(d.end),
       subtitle: d.subtitle
     }));
-    console.log('data', data);
+    // console.log('data', data);
     return dataFormatted;
   };
 
@@ -56,7 +56,7 @@ const Dashboard = () => {
     event: ProcessedEvent,
     action: EventActions
   ): Promise<ProcessedEvent> => {
-    console.log("handleConfirm =", action, event);
+    // console.log("handleConfirm =", action, event);
 
     return new Promise((res, rej) => {
       if (action === "edit") {
@@ -110,8 +110,6 @@ const Dashboard = () => {
   };
 
   const handleDelete = async (deletedId: string): Promise<string> => {
-    // Simulate http request: return the deleted id
-    console.log('deletedId', deletedId);
     return new Promise((res, rej) => {
       mutationDelete.mutate(deletedId, {
         onSuccess: () => {
@@ -134,10 +132,10 @@ const Dashboard = () => {
         getRemoteEvents={fetchRemote}
         onConfirm={handleConfirm}
         onDelete={handleDelete}
-        // onEventClick={handleEventClick}
         // editable={false}
         // deletable={false}
-        // disableViewer
+        disableViewer={false} // toggle on admin
+        draggable={false} // toggle on admin
         view="week"
         day={null}
         month={null}
