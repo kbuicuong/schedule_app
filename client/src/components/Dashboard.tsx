@@ -24,7 +24,7 @@ const Dashboard = () => {
     event: ProcessedEvent,
     action: EventActions
   ): Promise<ProcessedEvent> => {
-    console.log("handleConfirm =", action, event.title);
+    console.log("handleConfirm =", action, event);
 
     /**
      * Make sure to return 4 mandatory fields:
@@ -66,14 +66,32 @@ const Dashboard = () => {
     });
   };
 
+  const handleEventClick = (event: ProcessedEvent) => {
+    console.log("handleEventClick");
+  };
+
   return (
-    <>
+    <div>
       <Scheduler
         getRemoteEvents={fetchRemote}
         onConfirm={handleConfirm}
         onDelete={handleDelete}
+        // onEventClick={handleEventClick}
+        editable={false}
+        // deletable={false}
+        // disableViewer
+        view="week"
+        day={null}
+        month={null}
+        week={{
+          weekDays: [0, 1, 2, 3, 4, 5],
+          weekStartOn: 6,
+          startHour: 9,
+          endHour: 20,
+          step: 60,
+        }}
       />
-    </>
+    </div>
 
   );
 };

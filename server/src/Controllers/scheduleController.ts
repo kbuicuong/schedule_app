@@ -8,6 +8,7 @@ import {
   collection,
   doc,
   addDoc,
+  setDoc,
   getDoc,
   getDocs,
   updateDoc,
@@ -22,7 +23,9 @@ export const createSchedule = async (req:Request, res:Response, next:NextFunctio
     if(!data.event_id || !data.title || !data.description || !data.start || !data.end) {
       throw new Error('All fields are required');
     }
-    await addDoc(collection(db, 'schedules'), data);
+    // await addDoc(collection(db, 'schedules'), data);
+    const docId = `${data.start}.${data.end}`;
+    await setDoc(doc(db, 'schedules', docId), data);
     res.status(201).send('schedule created successfully');
   } catch (error) {
     if (error instanceof Error) {
