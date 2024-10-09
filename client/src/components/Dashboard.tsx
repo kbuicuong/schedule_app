@@ -2,37 +2,79 @@ import React, { useState, useEffect } from "react";
 import TimezoneSelect from "react-timezone-select";
 import { useNavigate } from "react-router-dom";
 
-const Dashboard = () => {
-  const [selectedTimezone, setSelectedTimezone] = useState({});
-  const navigate = useNavigate();
+import { Scheduler } from "@aldabil/react-scheduler";
+import {
+  EventActions,
+  ProcessedEvent
+} from "@aldabil/react-scheduler/types";
+import { EVENTS } from "./Events";
 
-  //👇🏻 Runs when a user sign out
-  const handleLogout = () => {
-    localStorage.removeItem("_id");
-    localStorage.removeItem("_myEmail");
-    navigate("/");
+const Dashboard = () => {
+  const fetchRemote = async (query: any): Promise<ProcessedEvent[]> => {
+    console.log({ query });
+    /**Simulate fetchin remote data */
+    return new Promise((res) => {
+      setTimeout(() => {
+        res(EVENTS);
+      }, 3000);
+    });
+  };
+
+  const handleConfirm = async (
+    event: ProcessedEvent,
+    action: EventActions
+  ): Promise<ProcessedEvent> => {
+    console.log("handleConfirm =", action, event.title);
+
+    /**
+     * Make sure to return 4 mandatory fields:
+     * event_id: string|number
+     * title: string
+     * start: Date|string
+     * end: Date|string
+     * ....extra other fields depend on your custom fields/editor properties
+     */
+    // Simulate http request: return added/edited event
+    return new Promise((res, rej) => {
+      if (action === "edit") {
+        /** PUT event to remote DB */
+      } else if (action === "create") {
+        /**POST event to remote DB */
+      }
+
+      const isFail = Math.random() > 0.6;
+      // Make it slow just for testing
+      setTimeout(() => {
+        if (isFail) {
+          rej("Ops... Faild");
+        } else {
+          res({
+            ...event,
+            event_id: event.event_id || Math.random()
+          });
+        }
+      }, 3000);
+    });
+  };
+
+  const handleDelete = async (deletedId: string): Promise<string> => {
+    // Simulate http request: return the deleted id
+    return new Promise((res, rej) => {
+      setTimeout(() => {
+        res(deletedId);
+      }, 3000);
+    });
   };
 
   return (
-    <div>
-      <nav className='flex bg-amber-100'>
-        <h2 className='flex-grow'>BookMe</h2>
-        <button onClick={handleLogout} className='logout__btn'>
-          Log out
-        </button>
-      </nav>
-      <main className='dashboard__main'>
-        <h2 className='dashboard__heading'>Select your availability</h2>
+    <>
+      <Scheduler
+        getRemoteEvents={fetchRemote}
+        onConfirm={handleConfirm}
+        onDelete={handleDelete}
+      />
+    </>
 
-        <div className='timezone__wrapper'>
-          <p>Pick your timezone</p>
-          <TimezoneSelect
-            value={selectedTimezone}
-            onChange={setSelectedTimezone}
-          />
-        </div>
-      </main>
-    </div>
   );
 };
 

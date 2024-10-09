@@ -1,6 +1,8 @@
 export type ScheduleType = {
-  id: number;
-  name: string;
+  id: number | string;
+  event_id: string | number;
+  title: string;
   description: string;
-  time: Date;
+  start: Date | string;
+  end: Date | string;
 };

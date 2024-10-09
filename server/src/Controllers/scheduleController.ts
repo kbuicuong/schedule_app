@@ -19,6 +19,9 @@ const db = getFirestore(firebase);
 export const createSchedule = async (req:Request, res:Response, next:NextFunction) => {
   try {
     const data = req.body;
+    if(!data.event_id || !data.title || !data.description || !data.start || !data.end) {
+      throw new Error('All fields are required');
+    }
     await addDoc(collection(db, 'schedules'), data);
     res.status(200).send('schedule created successfully');
   } catch (error) {
@@ -38,12 +41,13 @@ export const getSchedules = async (req:Request, res:Response, next:NextFunction)
       res.status(400).send('No schedule found');
     }else{
       schedules.forEach((doc) => {
-        const idNum = Number(doc.id);
         const schedule = new Schedule(
-          idNum,
-          doc.data().name,
+          doc.id,
+          doc.data().event_id,
+          doc.data().title,
           doc.data().description,
-          doc.data().time
+          doc.data().start,
+          doc.data().end
         );
         scheduleArray.push(schedule);
       });
@@ -80,7 +84,7 @@ export const getSchedule = async (req:Request, res:Response, next:NextFunction) 
 
 export const updateSchedule = async (req:Request, res:Response, next:NextFunction) => {
   try {
-    const id = req.params.id;
+    const id = req.params.event_id;
     const data = req.body;
     const schedule = doc(db, 'schedules', id);
     await updateDoc(schedule, data);
@@ -96,7 +100,7 @@ export const updateSchedule = async (req:Request, res:Response, next:NextFunctio
 
 export const deleteSchedule = async (req:Request, res:Response, next:NextFunction) => {
   try {
-    const id = req.params.id;
+    const id = req.params.event_id;
     await deleteDoc(doc(db, 'schedules', id));
     res.status(200).send('schedule deleted successfully');
   } catch (error) {
