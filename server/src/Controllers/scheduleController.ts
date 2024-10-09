@@ -23,7 +23,7 @@ export const createSchedule = async (req:Request, res:Response, next:NextFunctio
       throw new Error('All fields are required');
     }
     await addDoc(collection(db, 'schedules'), data);
-    res.status(200).send('schedule created successfully');
+    res.status(201).send('schedule created successfully');
   } catch (error) {
     if (error instanceof Error) {
       res.status(400).send(error.message);
