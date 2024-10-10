@@ -1,13 +1,15 @@
-import React, {useState, useEffect} from "react";
+import React, {useState, useEffect, useRef} from "react";
 
 import {Scheduler} from "@aldabil/react-scheduler";
 import {
   EventActions,
-  ProcessedEvent
+  ProcessedEvent, SchedulerRef
 } from "@aldabil/react-scheduler/types";
 import {useQueryClient, useMutation} from "react-query";
 import axios, {AxiosError} from "axios";
 import {toast} from "react-toastify";
+import {useAuthState} from "react-firebase-hooks/auth";
+import {firebaseAuth} from "../firebase/BaseConfig.ts";
 
 const getSchedules = async () => {
   const response = await axios.get(
@@ -26,6 +28,10 @@ type ScheduleType = {
 
 const Dashboard = () => {
   const queryClient = useQueryClient();
+  const [user] = useAuthState(firebaseAuth);
+  const [isAdmin, setIsAdmin] = useState<boolean>(false);
+  const calendarRef = useRef<SchedulerRef>(null);
+
   const mutationPost = useMutation((newSchedule: ScheduleType) =>
     axios.post("http://localhost:5000/api/schedule/new", newSchedule)
   );
@@ -38,6 +44,18 @@ const Dashboard = () => {
       return axios.delete(`http://localhost:5000/api/schedule/delete/${deleteId}`);
     }
   );
+
+  useEffect(() => {
+    if (user?.email === 'kbuicuong@gmail.com') {
+      setIsAdmin(true);
+      calendarRef.current?.scheduler.handleState(false, 'disableViewer')
+      calendarRef.current?.scheduler.handleState(true, 'draggable')
+    } else {
+      setIsAdmin(false);
+      calendarRef.current?.scheduler.handleState(true, 'disableViewer')
+      calendarRef.current?.scheduler.handleState(false, 'draggable')
+    }
+  }, [user, calendarRef.current?.scheduler.disableViewer]);
 
   const fetchRemote = async (query) => {
     const data: ScheduleType[] = await queryClient.fetchQuery("events", getSchedules)
@@ -125,17 +143,18 @@ const Dashboard = () => {
     });
   };
 
+  if (calendarRef.current) {
+    console.log('disableViewer', calendarRef.current.scheduler.disableViewer);
+    console.log('draggable', calendarRef.current.scheduler.draggable);
+  }
 
   return (
     <div>
       <Scheduler
+        ref={calendarRef}
         getRemoteEvents={fetchRemote}
         onConfirm={handleConfirm}
         onDelete={handleDelete}
-        // editable={false}
-        // deletable={false}
-        disableViewer={false} // toggle on admin
-        draggable={false} // toggle on admin
         view="week"
         day={null}
         month={null}
@@ -147,6 +166,7 @@ const Dashboard = () => {
           step: 60,
         }}
       />
+
     </div>
 
   );
