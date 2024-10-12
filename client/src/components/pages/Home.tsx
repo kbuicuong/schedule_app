@@ -1,4 +1,4 @@
-import {NavRoutes} from "../utils/NavRoutes.ts";
+import {NavRoutes} from "../../utils/NavRoutes.ts";
 
 export function Home() {
   return (

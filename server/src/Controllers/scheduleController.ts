@@ -33,8 +33,9 @@ export const createSchedule = async (req:Request, res:Response, next:NextFunctio
       const existingEnd = new Date(schedule.end).getTime();
       const newStart = new Date(data.start).getTime();
       const newEnd = new Date(data.end).getTime();
+      const approved = schedule.approved;
 
-      return (newStart < existingEnd && newEnd > existingStart);
+      return (newStart < existingEnd && newEnd > existingStart && approved);
     });
 
     if (overlapExists) {
@@ -42,14 +43,14 @@ export const createSchedule = async (req:Request, res:Response, next:NextFunctio
     }else{
       const docId = `${data.start}.${data.end}`;
       await setDoc(doc(db, 'schedules', docId), data);
-      res.status(201).send('schedule created successfully');
+      res.status(201).send({message: 'schedule created successfully'});
     }
 
   } catch (error) {
     if (error instanceof Error) {
       res.status(400).send(error.message);
     } else {
-      res.status(400).send('An unknown error occurred');
+      res.status(400).send({mesage: 'An unknown error occurred'});
     }
   }
 };
@@ -59,7 +60,7 @@ export const getSchedules = async (req:Request, res:Response, next:NextFunction)
     const schedules = await getDocs(collection(db, 'schedules'));
     const scheduleArray: ScheduleType[] = [];
     if(schedules.empty) {
-      res.status(400).send('No schedule found');
+      res.status(400).send({message: 'No schedule found'});
     }else{
       schedules.forEach((doc) => {
         const schedule = new Schedule(
@@ -68,10 +69,12 @@ export const getSchedules = async (req:Request, res:Response, next:NextFunction)
           doc.data().title,
           doc.data().subtitle,
           doc.data().start,
-          doc.data().end
+          doc.data().end,
+          doc.data().approved
         );
         scheduleArray.push(schedule);
       });
+      console.log(scheduleArray);
       res.status(200).send(scheduleArray);
 
     }
@@ -79,7 +82,7 @@ export const getSchedules = async (req:Request, res:Response, next:NextFunction)
     if (error instanceof Error) {
       res.status(400).send(error.message);
     } else {
-      res.status(400).send('An unknown error occurred');
+      res.status(400).send({message: 'An unknown error occurred'});
     }
   }
 };
@@ -92,13 +95,13 @@ export const getSchedule = async (req:Request, res:Response, next:NextFunction) 
     if (data.exists()) {
       res.status(200).send(data.data());
     } else {
-      res.status(404).send('schedule not found');
+      res.status(404).send({message: 'schedule not found'});
     }
   } catch (error) {
     if (error instanceof Error) {
       res.status(400).send(error.message);
     } else {
-      res.status(400).send('An unknown error occurred');
+      res.status(400).send({message: 'An unknown error occurred'});
     }
   }
 }
@@ -109,12 +112,12 @@ export const updateSchedule = async (req:Request, res:Response, next:NextFunctio
     const data = req.body;
     const schedule = doc(db, 'schedules', id);
     await updateDoc(schedule, data);
-    res.status(200).send('schedule updated successfully');
+    res.status(200).send({message: 'schedule updated successfully'});
   } catch (error) {
     if (error instanceof Error) {
       res.status(400).send(error.message);
     } else {
-      res.status(400).send('An unknown error occurred');
+      res.status(400).send({message: 'An unknown error occurred'});
     }
   }
 };
@@ -134,15 +137,15 @@ export const deleteSchedule = async (req: Request, res: Response, next: NextFunc
 
     if (docIdToDelete) {
       await deleteDoc(doc(db, 'schedules', docIdToDelete));
-      res.status(200).send('Schedule deleted successfully');
+      res.status(200).send({message: 'Schedule deleted successfully'});
     } else {
-      res.status(404).send('Schedule not found');
+      res.status(404).send({message: 'Schedule not found'});
     }
   } catch (error) {
     if (error instanceof Error) {
       res.status(400).send(error.message);
     } else {
-      res.status(400).send('An unknown error occurred');
+      res.status(400).send({message: 'An unknown error occurred'});
     }
   }
 };

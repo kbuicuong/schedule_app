@@ -3,4 +3,5 @@ export const NavRoutes = {
   "login": "/login",
   "about": "/about",
   "appointment": "/appointment",
+  "dashboard": "/dashboard",
 }

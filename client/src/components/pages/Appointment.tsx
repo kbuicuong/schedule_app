@@ -9,27 +9,28 @@ import {useQueryClient, useMutation} from "react-query";
 import axios, {AxiosError} from "axios";
 import {toast} from "react-toastify";
 import {useAuthState} from "react-firebase-hooks/auth";
-import {firebaseAuth} from "../firebase/BaseConfig.ts";
+import {firebaseAuth} from "../../firebase/BaseConfig.ts";
 
-const getSchedules = async () => {
+export const getSchedules = async () => {
   const response = await axios.get(
     "http://localhost:5000/api/schedule",
   );
   return response.data;
 };
 
-type ScheduleType = {
+export type ScheduleType = {
   event_id: string | number;
   title: string;
   subtitle: string;
   start: string | Date;
   end: string | Date;
+  approved?: boolean;
 };
 
 const Appointment = () => {
   const queryClient = useQueryClient();
   const [user] = useAuthState(firebaseAuth);
-  const [isAdmin, setIsAdmin] = useState<boolean>(false);
+  // const [isAdmin, setIsAdmin] = useState<boolean>(false);
   const calendarRef = useRef<SchedulerRef>(null);
 
   const mutationPost = useMutation((newSchedule: ScheduleType) =>
@@ -47,11 +48,9 @@ const Appointment = () => {
 
   useEffect(() => {
     if (user?.email === 'kbuicuong@gmail.com') {
-      setIsAdmin(true);
       calendarRef.current?.scheduler.handleState(false, 'disableViewer')
       calendarRef.current?.scheduler.handleState(true, 'draggable')
     } else {
-      setIsAdmin(false);
       calendarRef.current?.scheduler.handleState(true, 'disableViewer')
       calendarRef.current?.scheduler.handleState(false, 'draggable')
     }
@@ -59,14 +58,16 @@ const Appointment = () => {
 
   const fetchRemote = async (query) => {
     const data: ScheduleType[] = await queryClient.fetchQuery("events", getSchedules)
-    const dataFormatted = data.map((d) => ({
+    const dataFormatted: ProcessedEvent[] = data.map((d) => ({
       event_id: d.event_id,
       title: d.title,
       start: new Date(d.start),
       end: new Date(d.end),
-      subtitle: d.subtitle
+      subtitle: d.subtitle,
+      approved: d.approved,
     }));
-    // console.log('data', data);
+    // const dataFiltered = dataFormatted.filter((d) => d.approved === false);
+    console.log('data', dataFormatted);
     return dataFormatted;
   };
 
@@ -85,8 +86,10 @@ const Appointment = () => {
           start: event.start,
           end: event.end,
           subtitle: event.subtitle as string,
+          approved: true,
         }, {
           onSuccess: () => {
+            toast.success("Successfully edited schedule");
             res(event);
           },
           onError: (error) => {
@@ -105,9 +108,11 @@ const Appointment = () => {
             start: event.start,
             end: event.end,
             subtitle: event.subtitle as string,
+            approved: false,
           },
           {
             onSuccess: () => {
+              toast.success("Appointment has been created!");
               res({
                 ...event,
                 event_id: event.event_id || Math.random(),
@@ -131,6 +136,7 @@ const Appointment = () => {
     return new Promise((res, rej) => {
       mutationDelete.mutate(deletedId, {
         onSuccess: () => {
+          toast.success("Successfully deleted appointment.");
           res(deletedId);
         },
         onError: (error) => {
@@ -143,13 +149,8 @@ const Appointment = () => {
     });
   };
 
-  if (calendarRef.current) {
-    console.log('disableViewer', calendarRef.current.scheduler.disableViewer);
-    console.log('draggable', calendarRef.current.scheduler.draggable);
-  }
-
   return (
-    <div>
+    <div className='mt-2.5'>
       <Scheduler
         ref={calendarRef}
         getRemoteEvents={fetchRemote}
@@ -159,11 +160,44 @@ const Appointment = () => {
         day={null}
         month={null}
         week={{
-          weekDays: [0, 1, 2, 3, 4, 5],
-          weekStartOn: 6,
+          weekDays: [0, 1, 2, 3, 4, 5, 6],
+          weekStartOn: 1,
           startHour: 9,
           endHour: 20,
           step: 60,
+        }}
+        eventRenderer={({ event, ...props }) => {
+          // console.log('event', event);
+          if (event.approved !== true ) {
+            return (
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "space-between",
+                  height: "100%",
+                  background: "#757575",
+                }}
+                {...props}
+              >
+                <div
+                  style={{ height: 20, background: "#ffffffb5", color: "black" }}
+                >
+                  {event.start.toLocaleTimeString("en-US", {
+                    timeStyle: "short",
+                  })}
+                </div>
+                <div>{event.title}</div>
+                <div
+                  style={{ height: 20, background: "#ffffffb5", color: "black" }}
+                >
+                  {/*{event.end.toLocaleTimeString("en-US", { timeStyle: "short" })}*/}
+                  Awaiting approval...
+                </div>
+              </div>
+            );
+          }
+          return null;
         }}
       />
 

@@ -5,4 +5,5 @@ export type ScheduleType = {
   subtitle: string;
   start: Date | string;
   end: Date | string;
+  approved?: boolean;
 };
