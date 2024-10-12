@@ -1,6 +1,6 @@
 export const NavRoutes = {
   "home": "/",
   "login": "/login",
-  "register": "/register",
-  "dashboard": "/dashboard"
+  "about": "/about",
+  "appointment": "/appointment",
 }

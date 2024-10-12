@@ -26,7 +26,7 @@ type ScheduleType = {
   end: string | Date;
 };
 
-const Dashboard = () => {
+const Appointment = () => {
   const queryClient = useQueryClient();
   const [user] = useAuthState(firebaseAuth);
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
@@ -172,4 +172,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default Appointment;
