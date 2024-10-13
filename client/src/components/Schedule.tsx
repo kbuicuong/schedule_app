@@ -1,4 +1,4 @@
-import {ScheduleType} from '/pages/Appointment.tsx'
+import {ScheduleType} from './pages/Appointment.tsx'
 import {useMutation} from "react-query";
 import axios, {AxiosError} from "axios";
 import {toast} from "react-toastify";
@@ -25,31 +25,35 @@ export function Schedule(props: ScheduleProps): JSX.Element {
   });
 
   const handleApprove = () => {
-    mutationPut.mutate(schedule, {
-      onSuccess: () => {
-        toast.success("Schedule Approved");
-      },
-      onError: (error) => {
-        if (error instanceof AxiosError) {
-          toast.error(error.response?.data.message);
-        }
-      },
+    return new Promise(() => {
+      mutationPut.mutate(schedule, {
+        onSuccess: () => {
+          toast.success("Successfully edited schedule");
+          refetch();
+        },
+        onError: (error) => {
+          if (error instanceof AxiosError) {
+            toast.error(error.response?.data.message);
+          }
+        },
+      });
     });
-    refetch();
   }
 
   const handleDelete = () => {
-    mutationDelete.mutate(schedule.event_id, {
-      onSuccess: () => {
-        toast.success("Successfully deleted appointment.");
-      },
-      onError: (error) => {
-        if (error instanceof AxiosError) {
-          toast.error(error.response?.data.message);
-        }
-      },
+    return new Promise(() => {
+      mutationDelete.mutate(schedule.event_id.toString(), {
+        onSuccess: () => {
+          toast.success("Successfully deleted schedule");
+          refetch();
+        },
+        onError: (error) => {
+          if (error instanceof AxiosError) {
+            toast.error(error.response?.data.message);
+          }
+        },
+      });
     });
-    refetch();
   }
 
 
@@ -60,8 +64,8 @@ export function Schedule(props: ScheduleProps): JSX.Element {
         <h1 className="text-xl font-bold text-gray-800">{schedule.title}</h1>
 
         <p className="mt-2 text-sm text-gray-600">{schedule.subtitle}</p>
-        <p className="mt-2 text-sm text-gray-600">{schedule.start}</p>
-        <p className="mt-2 text-sm text-gray-600">{schedule.end}</p>
+        <p className="mt-2 text-sm text-gray-600">{new Date(schedule.start).toString()}</p>
+        <p className="mt-2 text-sm text-gray-600">{new Date(schedule.end).toString()}</p>
 
         <div className="flex justify-between mt-3 item-center">
           <button
