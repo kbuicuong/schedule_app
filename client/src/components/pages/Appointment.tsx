@@ -5,11 +5,12 @@ import {
   EventActions,
   ProcessedEvent, SchedulerRef
 } from "@aldabil/react-scheduler/types";
-import {useQueryClient, useMutation} from "react-query";
+import {useQueryClient, useMutation, useQuery} from "react-query";
 import axios, {AxiosError} from "axios";
 import {toast} from "react-toastify";
 import {useAuthState} from "react-firebase-hooks/auth";
 import {firebaseAuth} from "../../firebase/BaseConfig.ts";
+import {CustomEditor} from "../CustomEditor.tsx";
 
 export const getSchedules = async () => {
   const response = await axios.get(
@@ -30,7 +31,6 @@ export type ScheduleType = {
 const Appointment = () => {
   const queryClient = useQueryClient();
   const [user] = useAuthState(firebaseAuth);
-  // const [isAdmin, setIsAdmin] = useState<boolean>(false);
   const calendarRef = useRef<SchedulerRef>(null);
 
   const mutationPost = useMutation((newSchedule: ScheduleType) =>
@@ -50,13 +50,16 @@ const Appointment = () => {
     if (user?.email === 'kbuicuong@gmail.com') {
       calendarRef.current?.scheduler.handleState(false, 'disableViewer')
       calendarRef.current?.scheduler.handleState(true, 'draggable')
+      calendarRef.current?.scheduler.handleState(fetchRemote, 'getRemoteEvents')
     } else {
       calendarRef.current?.scheduler.handleState(true, 'disableViewer')
       calendarRef.current?.scheduler.handleState(false, 'draggable')
+      calendarRef.current?.scheduler.handleState(fetchRemote, 'getRemoteEvents')
+
     }
   }, [user, calendarRef.current?.scheduler.disableViewer]);
 
-  const fetchRemote = async (query) => {
+  const fetchRemote = async () => {
     const data: ScheduleType[] = await queryClient.fetchQuery("events", getSchedules)
     const dataFormatted: ProcessedEvent[] = data.map((d) => ({
       event_id: d.event_id,
@@ -66,8 +69,7 @@ const Appointment = () => {
       subtitle: d.subtitle,
       approved: d.approved,
     }));
-    // const dataFiltered = dataFormatted.filter((d) => d.approved === false);
-    console.log('data', dataFormatted);
+    ;
     return dataFormatted;
   };
 
@@ -75,7 +77,6 @@ const Appointment = () => {
     event: ProcessedEvent,
     action: EventActions
   ): Promise<ProcessedEvent> => {
-    // console.log("handleConfirm =", action, event);
 
     return new Promise((res, rej) => {
       if (action === "edit") {
@@ -127,8 +128,6 @@ const Appointment = () => {
           }
         );
       }
-
-
     });
   };
 
@@ -149,13 +148,16 @@ const Appointment = () => {
     });
   };
 
+
   return (
     <div className='mt-2.5'>
       <Scheduler
         ref={calendarRef}
-        getRemoteEvents={fetchRemote}
+        // getRemoteEvents={fetchRemote}
+        // events={schedules}
         onConfirm={handleConfirm}
         onDelete={handleDelete}
+        customEditor={(scheduler) => <CustomEditor scheduler={scheduler}/>}
         view="week"
         day={null}
         month={null}
@@ -166,9 +168,17 @@ const Appointment = () => {
           endHour: 20,
           step: 60,
         }}
-        eventRenderer={({ event, ...props }) => {
+        fields={[
+          {
+            name: "Description",
+            type: "input",
+            default: "Default Value...",
+            config: { label: "Details", multiline: true, rows: 4 },
+          },
+        ]}
+        eventRenderer={({event, ...props}) => {
           // console.log('event', event);
-          if (event.approved !== true ) {
+          if (event.approved !== true) {
             return (
               <div
                 style={{
@@ -181,7 +191,7 @@ const Appointment = () => {
                 {...props}
               >
                 <div
-                  style={{ height: 20, background: "#ffffffb5", color: "black" }}
+                  style={{height: 20, background: "#ffffffb5", color: "black"}}
                 >
                   {event.start.toLocaleTimeString("en-US", {
                     timeStyle: "short",
@@ -189,7 +199,7 @@ const Appointment = () => {
                 </div>
                 <div>{event.title}</div>
                 <div
-                  style={{ height: 20, background: "#ffffffb5", color: "black" }}
+                  style={{height: 20, background: "#ffffffb5", color: "black"}}
                 >
                   {/*{event.end.toLocaleTimeString("en-US", { timeStyle: "short" })}*/}
                   Awaiting approval...
@@ -200,6 +210,7 @@ const Appointment = () => {
           return null;
         }}
       />
+
 
     </div>
 

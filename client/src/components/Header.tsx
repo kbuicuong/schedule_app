@@ -5,7 +5,6 @@ export function Header() {
 
   const location = useLocation();
   const resolvedPath = useResolvedPath(location).pathname;
-  console.log('location', resolvedPath);
 
   const active = 'text-gray-800 transition-colors duration-300 transform border-b-2 border-blue-500 mx-1.5 sm:mx-6';
   const inactive = 'border-b-2 border-transparent hover:text-gray-800 transition-colors duration-300 transform hover:border-blue-500 mx-1.5 sm:mx-6';
