@@ -20,7 +20,7 @@ const db = getFirestore(firebase);
 export const createSchedule = async (req:Request, res:Response, next:NextFunction) => {
   try {
     const data = req.body;
-    if(!data.event_id || !data.title || !data.subtitle || !data.start || !data.end) {
+    if(!data.event_id || !data.title || !data.start || !data.end) {
       throw new Error('All fields are required');
     }
     // await addDoc(collection(db, 'schedules'), data);
@@ -68,6 +68,7 @@ export const getSchedules = async (req:Request, res:Response, next:NextFunction)
           doc.data().event_id,
           doc.data().title,
           doc.data().subtitle,
+          doc.data().description,
           doc.data().start,
           doc.data().end,
           doc.data().approved

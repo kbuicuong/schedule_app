@@ -1,5 +1,4 @@
-import React, {useEffect, useState} from "react";
-import {useNavigate, Link} from "react-router-dom";
+import {useEffect} from "react";
 import {firebaseAuth, googleProvider} from '../../firebase/BaseConfig.ts';
 import {signInWithPopup} from 'firebase/auth';
 import {useAuthState} from 'react-firebase-hooks/auth';

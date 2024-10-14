@@ -1,11 +1,11 @@
-import React, {useState, useEffect, useRef} from "react";
+import {useEffect, useRef, useState} from "react";
 
 import {Scheduler} from "@aldabil/react-scheduler";
 import {
   EventActions,
   ProcessedEvent, SchedulerRef
 } from "@aldabil/react-scheduler/types";
-import {useQueryClient, useMutation, useQuery} from "react-query";
+import {useQueryClient, useMutation} from "react-query";
 import axios, {AxiosError} from "axios";
 import {toast} from "react-toastify";
 import {useAuthState} from "react-firebase-hooks/auth";
@@ -22,7 +22,8 @@ export const getSchedules = async () => {
 export type ScheduleType = {
   event_id: string | number;
   title: string;
-  subtitle: string;
+  subtitle?: string;
+  description?: string;
   start: string | Date;
   end: string | Date;
   approved?: boolean;
@@ -32,7 +33,7 @@ const Appointment = () => {
   const queryClient = useQueryClient();
   const [user] = useAuthState(firebaseAuth);
   const calendarRef = useRef<SchedulerRef>(null);
-
+  const [isAdmin, setIsAdmin] = useState<boolean>(false);
   const mutationPost = useMutation((newSchedule: ScheduleType) =>
     axios.post("http://localhost:5000/api/schedule/new", newSchedule)
   );
@@ -48,16 +49,18 @@ const Appointment = () => {
 
   useEffect(() => {
     if (user?.email === 'kbuicuong@gmail.com') {
+      calendarRef.current?.scheduler.handleState(fetchRemote, 'getRemoteEvents')
       calendarRef.current?.scheduler.handleState(false, 'disableViewer')
       calendarRef.current?.scheduler.handleState(true, 'draggable')
-      calendarRef.current?.scheduler.handleState(fetchRemote, 'getRemoteEvents')
+      setIsAdmin(true);
     } else {
+      calendarRef.current?.scheduler.handleState(fetchRemote, 'getRemoteEvents')
       calendarRef.current?.scheduler.handleState(true, 'disableViewer')
       calendarRef.current?.scheduler.handleState(false, 'draggable')
-      calendarRef.current?.scheduler.handleState(fetchRemote, 'getRemoteEvents')
+      setIsAdmin(false);
 
     }
-  }, [user, calendarRef.current?.scheduler.disableViewer]);
+  }, [user]);
 
   const fetchRemote = async () => {
     const data: ScheduleType[] = await queryClient.fetchQuery("events", getSchedules)
@@ -67,6 +70,7 @@ const Appointment = () => {
       start: new Date(d.start),
       end: new Date(d.end),
       subtitle: d.subtitle,
+      description: d.description,
       approved: d.approved,
     }));
     ;
@@ -116,7 +120,7 @@ const Appointment = () => {
               toast.success("Appointment has been created!");
               res({
                 ...event,
-                event_id: event.event_id || Math.random(),
+                // event_id: event.event_id || Math.random(),
               });
             },
             onError: (error) => {
@@ -136,6 +140,7 @@ const Appointment = () => {
       mutationDelete.mutate(deletedId, {
         onSuccess: () => {
           toast.success("Successfully deleted appointment.");
+          calendarRef.current?.scheduler.handleState(fetchRemote, 'getRemoteEvents')
           res(deletedId);
         },
         onError: (error) => {
@@ -148,14 +153,12 @@ const Appointment = () => {
     });
   };
 
-
   return (
     <div className='mt-2.5'>
       <Scheduler
         ref={calendarRef}
         // getRemoteEvents={fetchRemote}
-        // events={schedules}
-        onConfirm={handleConfirm}
+        // onConfirm={handleConfirm}
         onDelete={handleDelete}
         customEditor={(scheduler) => <CustomEditor scheduler={scheduler}/>}
         view="week"
@@ -168,18 +171,10 @@ const Appointment = () => {
           endHour: 20,
           step: 60,
         }}
-        fields={[
-          {
-            name: "Description",
-            type: "input",
-            default: "Default Value...",
-            config: { label: "Details", multiline: true, rows: 4 },
-          },
-        ]}
         eventRenderer={({event, ...props}) => {
-          // console.log('event', event);
           if (event.approved !== true) {
             return (
+
               <div
                 style={{
                   display: "flex",
@@ -188,7 +183,6 @@ const Appointment = () => {
                   height: "100%",
                   background: "#757575",
                 }}
-                {...props}
               >
                 <div
                   style={{height: 20, background: "#ffffffb5", color: "black"}}

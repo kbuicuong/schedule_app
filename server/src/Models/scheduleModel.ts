@@ -3,6 +3,7 @@ class Schedule {
   event_id: string | number;
   title: string;
   subtitle: string;
+  description: string;
   start: Date | string;
   end: Date | string;
   approved: boolean;
@@ -12,6 +13,7 @@ class Schedule {
     event_id: number | string,
     name: string,
     subtitle: string,
+    description: string,
     start_time: Date | string,
     end_time: Date | string,
     approved: boolean,
@@ -20,6 +22,7 @@ class Schedule {
       (this.event_id = event_id),
       (this.title = name),
       (this.subtitle = subtitle),
+      (this.description = description),
       (this.start = start_time),
       (this.end = end_time),
       (this.approved = approved);

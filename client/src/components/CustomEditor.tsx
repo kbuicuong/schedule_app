@@ -5,24 +5,35 @@ import dayjs, {Dayjs} from "dayjs";
 import {LocalizationProvider} from "@mui/x-date-pickers";
 import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
 import {DateTimePicker} from "@mui/x-date-pickers";
+import {useMutation} from "react-query";
+import axios, {AxiosError} from "axios";
+import {ScheduleType} from "./pages/Appointment.tsx";
+import {toast} from "react-toastify";
 
 interface CustomEditorProps {
   scheduler: SchedulerHelpers;
 }
 export const CustomEditor = ({ scheduler }: CustomEditorProps) => {
   const event = scheduler.edited;
-  // Make your own form/state
+
+  const mutationPost = useMutation((newSchedule: ProcessedEvent) =>
+    axios.post("http://localhost:5000/api/schedule/new", newSchedule)
+  );
+  const mutationPut = useMutation((newSchedule: ProcessedEvent) => {
+    const start = new Date(newSchedule.start).toISOString();
+    const end = new Date(newSchedule.end).toISOString();
+    return axios.put(`http://localhost:5000/api/schedule/update/${start}.${end}`, newSchedule);
+  });
+
   const [startValue, setStartValue] = useState<Dayjs | null>(dayjs(scheduler.state.start.value));
-  const [endValue, setEndValue] = useState<Dayjs | null>(dayjs(scheduler.state.start.value));
+  const [endValue, setEndValue] = useState<Dayjs | null>(dayjs(scheduler.state.end.value));
 
   const [state, setState] = useState({
     title: event?.title || "",
     description: event?.description || "",
-    // start: event?.start ? dayjs(event.start) : dayjs(scheduler.state.start.value),
-    // end: event?.end ? dayjs(event.end) : dayjs(scheduler.state.end.value)
   });
   const [error, setError] = useState("");
-  // console.log('start', state.start);
+
   const handleChange = (value: string, name: string) => {
     setState((prev) => {
       return {
@@ -31,37 +42,61 @@ export const CustomEditor = ({ scheduler }: CustomEditorProps) => {
       };
     });
   };
+
   const handleSubmit = async () => {
     // Your own validation
     if (state.title.toString().length < 3) {
       return setError("Min 3 letters");
     }
 
+
     try {
       scheduler.loading(true);
 
-      /**Simulate remote data saving */
-      const added_updated_event = (await new Promise((res) => {
-        /**
-         * Make sure the event have 4 mandatory fields
-         * event_id: string|number
-         * title: string
-         * start: Date|string
-         * end: Date|string
-         */
-        setTimeout(() => {
-          res({
-            event_id: event?.event_id || Math.random(),
-            title: state.title,
-            start: startValue ? startValue.toDate() : new Date(),
-            end: endValue ? endValue.toDate() : new Date(),
-            description: state.description
-          });
-        }, 3000);
-      })) as ProcessedEvent;
+      const schedule = {
+        event_id: event?.event_id || Math.random(),
+        title: state.title,
+        start: startValue ? startValue.toDate() : new Date(),
+        end: endValue ? endValue.toDate() : new Date(),
+        description: state.description,
+      } as ProcessedEvent;
 
-      scheduler.onConfirm(added_updated_event, event ? "edit" : "create");
-      scheduler.close();
+      return new Promise(() => {
+        if(event){
+          mutationPut.mutate(schedule, {
+            onSuccess: () => {
+              toast.success("Successfully edited schedule");
+              scheduler.onConfirm(schedule, "edit");
+            },
+            onError: (error) => {
+              if (error instanceof AxiosError) {
+                toast.error(error.response?.data.message);
+              }
+            },
+            onSettled: () => {
+              scheduler.close();
+            }
+          })
+        }else{
+          mutationPost.mutate( schedule,
+            {
+              onSuccess: () => {
+                toast.success("Appointment has been created!");
+                scheduler.onConfirm(schedule, "create");
+              },
+              onError: (error) => {
+                if (error instanceof AxiosError) {
+                  toast.error(error.response?.data.message);
+                }
+              },
+              onSettled: () => {
+                scheduler.close();
+              }
+            }
+          );
+        }
+      });
+
     } finally {
       scheduler.loading(false);
     }
