@@ -104,7 +104,8 @@ export const CustomEditor = ({ scheduler }: CustomEditorProps) => {
   return (
     <div>
       <div style={{ padding: "1rem" }}>
-        <p>Load your custom form/fields</p>
+        <p className='text-xl'>Add Event</p>
+        <p>Please only add 1 event, you cannot edit/cancel</p>
         <TextField
           label="Name"
           value={state.title}
@@ -112,25 +113,30 @@ export const CustomEditor = ({ scheduler }: CustomEditorProps) => {
           error={!!error}
           helperText={error}
           fullWidth
+          required
+          sx={{ margin: "1rem 0" }}
         />
         <TextField
           label="What do you want to get done?"
+          required
           value={state.description}
           onChange={(e) => handleChange(e.target.value, "description")}
           fullWidth
         />
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <DateTimePicker
-            label="Start"
-            value={startValue}
-            onChange={(newValue) => setStartValue(newValue)}
-          />
-          <DateTimePicker
-            label="End"
-            value={endValue}
-            onChange={(newValue) => setEndValue(newValue)}
-          />
-        </LocalizationProvider>
+        <div className='flex gap-2 mt-4'>
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <DateTimePicker
+              label="Start"
+              value={startValue}
+              onChange={(newValue) => setStartValue(newValue)}
+            />
+            <DateTimePicker
+              label="End"
+              value={endValue}
+              onChange={(newValue) => setEndValue(newValue)}
+            />
+          </LocalizationProvider>
+        </div>
       </div>
       <DialogActions>
         <Button onClick={scheduler.close}>Cancel</Button>

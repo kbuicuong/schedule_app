@@ -48,7 +48,10 @@ const Appointment = () => {
   );
 
   useEffect(() => {
-    if (user?.email === 'kbuicuong@gmail.com') {
+    if(!user){
+      return;
+    }
+    if (user.email === 'kbuicuong@gmail.com') {
       calendarRef.current?.scheduler.handleState(fetchRemote, 'getRemoteEvents')
       calendarRef.current?.scheduler.handleState(false, 'disableViewer')
       calendarRef.current?.scheduler.handleState(true, 'draggable')
@@ -202,6 +205,14 @@ const Appointment = () => {
             );
           }
           return null;
+        }}
+        viewerExtraComponent={(fields, event) => {
+          return (
+            <div>
+              <p>Useful to render custom fields...</p>
+              <p>Description: {event.description || "Nothing..."}</p>
+            </div>
+          );
         }}
       />
 
