@@ -24,7 +24,8 @@
     "react-query": "^3.39.3",
     "react-router-dom": "^6.26.2",
     "react-timezone-select": "^3.2.8",
-    "react-toastify": "^10.0.5"
+    "react-toastify": "^10.0.5",
+    "rrule": "^2.8.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.9.0",
