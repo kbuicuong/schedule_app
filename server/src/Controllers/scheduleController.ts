@@ -69,13 +69,14 @@ export const getSchedules = async (req:Request, res:Response, next:NextFunction)
           doc.data().title,
           doc.data().subtitle,
           doc.data().description,
+          doc.data().email,
+          doc.data().phone,
           doc.data().start,
           doc.data().end,
           doc.data().approved
         );
         scheduleArray.push(schedule);
       });
-      console.log(scheduleArray);
       res.status(200).send(scheduleArray);
 
     }

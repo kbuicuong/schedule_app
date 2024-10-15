@@ -31,8 +31,10 @@ export const CustomEditor = ({ scheduler }: CustomEditorProps) => {
   const [state, setState] = useState({
     title: event?.title || "",
     description: event?.description || "",
+    email: event?.email || "",
+    phone: event?.phone || ""
   });
-  const [error, setError] = useState("");
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
   const handleChange = (value: string, name: string) => {
     setState((prev) => {
@@ -45,8 +47,23 @@ export const CustomEditor = ({ scheduler }: CustomEditorProps) => {
 
   const handleSubmit = async () => {
     // Your own validation
+    const newErrors: { [key: string]: string } = {};
+
     if (state.title.toString().length < 3) {
-      return setError("Min 3 letters");
+      newErrors.title = "Min 3 letters";
+    }
+    if (!state.description) {
+      newErrors.description = "Description is required";
+    }
+    if (!state.email) {
+      newErrors.email = "Email is required";
+    }
+    if (!state.phone) {
+      newErrors.phone = "Phone is required";
+    }
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
     }
 
 
@@ -59,6 +76,8 @@ export const CustomEditor = ({ scheduler }: CustomEditorProps) => {
         start: startValue ? startValue.toDate() : new Date(),
         end: endValue ? endValue.toDate() : new Date(),
         description: state.description,
+        email: state.email,
+        phone: state.phone,
       } as ProcessedEvent;
 
       return new Promise(() => {
@@ -110,17 +129,35 @@ export const CustomEditor = ({ scheduler }: CustomEditorProps) => {
           label="Name"
           value={state.title}
           onChange={(e) => handleChange(e.target.value, "title")}
-          error={!!error}
-          helperText={error}
+          error={!!errors.title}
+          helperText={errors.title}
           fullWidth
-          required
           sx={{ margin: "1rem 0" }}
         />
         <TextField
           label="What do you want to get done?"
-          required
           value={state.description}
           onChange={(e) => handleChange(e.target.value, "description")}
+          error={!!errors.description}
+          helperText={errors.description}
+          fullWidth
+        />
+        <TextField
+          label="Email"
+          value={state.email}
+          onChange={(e) => handleChange(e.target.value, "email")}
+          error={!!errors.email}
+          helperText={errors.email}
+          fullWidth
+          sx={{ margin: "1rem 0" }}
+          slotProps={{ htmlInput: { inputMode: "email" } }}
+        />
+        <TextField
+          label="Phone"
+          value={state.phone}
+          onChange={(e) => handleChange(e.target.value, "phone")}
+          error={!!errors.phone}
+          helperText={errors.phone}
           fullWidth
         />
         <div className='flex gap-2 mt-4'>

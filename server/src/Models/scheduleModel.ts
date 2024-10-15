@@ -4,6 +4,8 @@ class Schedule {
   title: string;
   subtitle: string;
   description: string;
+  email: string;
+  phone: string;
   start: Date | string;
   end: Date | string;
   approved: boolean;
@@ -14,6 +16,8 @@ class Schedule {
     name: string,
     subtitle: string,
     description: string,
+    email: string,
+    phone: string,
     start_time: Date | string,
     end_time: Date | string,
     approved: boolean,
@@ -23,6 +27,8 @@ class Schedule {
       (this.title = name),
       (this.subtitle = subtitle),
       (this.description = description),
+      (this.email = email),
+      (this.phone = phone),
       (this.start = start_time),
       (this.end = end_time),
       (this.approved = approved);

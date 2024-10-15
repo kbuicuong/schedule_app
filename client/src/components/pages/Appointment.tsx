@@ -24,6 +24,8 @@ export type ScheduleType = {
   title: string;
   subtitle?: string;
   description?: string;
+  email?: string;
+  phone?: string
   start: string | Date;
   end: string | Date;
   approved?: boolean;
@@ -74,6 +76,8 @@ const Appointment = () => {
       end: new Date(d.end),
       subtitle: d.subtitle,
       description: d.description,
+      email: d.email,
+      phone: d.phone,
       approved: d.approved,
     }));
     ;
@@ -209,8 +213,9 @@ const Appointment = () => {
         viewerExtraComponent={(fields, event) => {
           return (
             <div>
-              <p>Useful to render custom fields...</p>
               <p>Description: {event.description || "Nothing..."}</p>
+              <p>Email: {event.email || "Nothing...."}</p>
+              <p>Phone: {event.phone || "Nothing...."}</p>
             </div>
           );
         }}

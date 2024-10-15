@@ -4,6 +4,8 @@ export type ScheduleType = {
   title: string;
   subtitle: string;
   description: string;
+  email: string;
+  phone: string;
   start: Date | string;
   end: Date | string;
   approved?: boolean;
