@@ -50,10 +50,10 @@ const Appointment = () => {
   );
 
   useEffect(() => {
-    if(!user){
-      return;
-    }
-    if (user.email === 'kbuicuong@gmail.com') {
+    // if(!user){
+    //   return;
+    // }
+    if (user?.email === 'kbuicuong@gmail.com') {
       calendarRef.current?.scheduler.handleState(fetchRemote, 'getRemoteEvents')
       calendarRef.current?.scheduler.handleState(false, 'disableViewer')
       calendarRef.current?.scheduler.handleState(true, 'draggable')
@@ -65,7 +65,7 @@ const Appointment = () => {
       setIsAdmin(false);
 
     }
-  }, [user]);
+  }, [user, calendarRef.current]);
 
   const fetchRemote = async () => {
     const data: ScheduleType[] = await queryClient.fetchQuery("events", getSchedules)
