@@ -192,7 +192,7 @@ const Appointment = () => {
                 }}
               >
                 <div
-                  style={{height: 20, background: "#ffffffb5", color: "black"}}
+                  style={{height: 20, background: "#ffffffb5", color: "black", fontSize: '10px'}}
                 >
                   {event.start.toLocaleTimeString("en-US", {
                     timeStyle: "short",
