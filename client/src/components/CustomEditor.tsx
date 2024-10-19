@@ -100,7 +100,7 @@ export const CustomEditor = ({ scheduler }: CustomEditorProps) => {
           mutationPost.mutate( schedule,
             {
               onSuccess: () => {
-                toast.success("Appointment has been created!");
+                toast.success("Appointment has been created! You'll receive an email once it is approved.");
                 SendEmail("kbuicuong@gmail.com",
                   "Nails by Tony",
                   `A new appointment has been created at ${schedule.start}`,

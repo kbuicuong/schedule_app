@@ -124,7 +124,6 @@ const Appointment = () => {
                   onClick();
                 }}
                 disableRipple={disabled}
-                // disabled={disabled}
                 {...restProps}
               ></Button>
             );
