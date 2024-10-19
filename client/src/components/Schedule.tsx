@@ -2,6 +2,7 @@ import {ScheduleType} from './pages/Appointment.tsx'
 import {useMutation} from "react-query";
 import axios, {AxiosError} from "axios";
 import {toast} from "react-toastify";
+import {SendEmail} from "../utils/SendEmail.ts";
 
 type ScheduleProps = {
   schedule: ScheduleType,
@@ -29,6 +30,7 @@ export function Schedule(props: ScheduleProps): JSX.Element {
       mutationPut.mutate(schedule, {
         onSuccess: () => {
           toast.success("Successfully edited schedule");
+          SendEmail(schedule.email, schedule.title, "Your schedule has been approved", "Your schedule has been approved");
           refetch();
         },
         onError: (error) => {
