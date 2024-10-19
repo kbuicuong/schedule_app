@@ -7,7 +7,7 @@ import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
 import {DateTimePicker} from "@mui/x-date-pickers";
 import {useMutation} from "react-query";
 import axios, {AxiosError} from "axios";
-import {ScheduleType} from "./pages/Appointment.tsx";
+import {SendEmail} from "../utils/SendEmail.ts";
 import {toast} from "react-toastify";
 
 interface CustomEditorProps {
@@ -101,6 +101,11 @@ export const CustomEditor = ({ scheduler }: CustomEditorProps) => {
             {
               onSuccess: () => {
                 toast.success("Appointment has been created!");
+                SendEmail("kbuicuong@gmail.com",
+                  "Nails by Tony",
+                  `A new appointment has been created at ${schedule.start}`,
+                  `A new appointment has been created at ${schedule.start}`
+                );
                 scheduler.onConfirm(schedule, "create");
               },
               onError: (error) => {
