@@ -35,15 +35,7 @@ const Appointment = () => {
   const queryClient = useQueryClient();
   const [user] = useAuthState(firebaseAuth);
   const calendarRef = useRef<SchedulerRef>(null);
-  // const [isAdmin, setIsAdmin] = useState<boolean>(false);
-  // const mutationPost = useMutation((newSchedule: ScheduleType) =>
-  //   axios.post("http://localhost:5000/api/schedule/new", newSchedule)
-  // );
-  // const mutationPut = useMutation((newSchedule: ScheduleType) => {
-  //   const start = new Date(newSchedule.start).toISOString();
-  //   const end = new Date(newSchedule.end).toISOString();
-  //   return axios.put(`http://localhost:5000/api/schedule/update/${start}.${end}`, newSchedule);
-  // });
+
   const mutationDelete = useMutation((deleteId: string) => {
       return axios.delete(`http://localhost:5000/api/schedule/delete/${deleteId}`);
     }
@@ -77,64 +69,6 @@ const Appointment = () => {
     ;
     return dataFormatted;
   };
-
-  // const handleConfirm = async (
-  //   event: ProcessedEvent,
-  //   action: EventActions
-  // ): Promise<ProcessedEvent> => {
-  //
-  //   return new Promise((res, rej) => {
-  //     if (action === "edit") {
-  //       /** PUT event to remote DB */
-  //       mutationPut.mutate({
-  //         event_id: event.event_id,
-  //         title: event.title as string,
-  //         start: event.start,
-  //         end: event.end,
-  //         subtitle: event.subtitle as string,
-  //         approved: true,
-  //       }, {
-  //         onSuccess: () => {
-  //           toast.success("Successfully edited schedule");
-  //           res(event);
-  //         },
-  //         onError: (error) => {
-  //           rej();
-  //           if (error instanceof AxiosError) {
-  //             toast.error(error.response?.data.message);
-  //           }
-  //         },
-  //       })
-  //     } else if (action === "create") {
-  //       /** POST event to remote DB */
-  //       mutationPost.mutate(
-  //         {
-  //           event_id: event.event_id || Math.random(),
-  //           title: event.title as string,
-  //           start: event.start,
-  //           end: event.end,
-  //           subtitle: event.subtitle as string,
-  //           approved: false,
-  //         },
-  //         {
-  //           onSuccess: () => {
-  //             toast.success("Appointment has been created!");
-  //             res({
-  //               ...event,
-  //               // event_id: event.event_id || Math.random(),
-  //             });
-  //           },
-  //           onError: (error) => {
-  //             rej();
-  //             if (error instanceof AxiosError) {
-  //               toast.error(error.response?.data.message);
-  //             }
-  //           },
-  //         }
-  //       );
-  //     }
-  //   });
-  // };
 
   const handleDelete = async (deletedId: string): Promise<string> => {
     return new Promise((res, rej) => {
