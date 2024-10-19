@@ -11,6 +11,7 @@ import {toast} from "react-toastify";
 import {useAuthState} from "react-firebase-hooks/auth";
 import {firebaseAuth} from "../../firebase/BaseConfig.ts";
 import {CustomEditor} from "../CustomEditor.tsx";
+import {Button} from "@mui/material";
 
 export const getSchedules = async () => {
   const response = await axios.get(
@@ -105,6 +106,29 @@ const Appointment = () => {
           startHour: 9,
           endHour: 20,
           step: 60,
+          cellRenderer: ({ height,day, onClick, ...props }) => {
+            const weekday = day.getDay();
+            const disabled = weekday === 2;
+            const restProps = disabled ? {} : props;
+            return (
+              <Button
+                style={{
+                  height: "100%",
+                  background: disabled ? "#eee" : "transparent",
+                  cursor: disabled ? "not-allowed" : "pointer"
+                }}
+                onClick={() => {
+                  if (disabled) {
+                    return toast.error("Tony is not available on Tuesday");
+                  }
+                  onClick();
+                }}
+                disableRipple={disabled}
+                // disabled={disabled}
+                {...restProps}
+              ></Button>
+            );
+          }
         }}
         eventRenderer={({event, ...props}) => {
           if (event.approved !== true) {
@@ -147,6 +171,7 @@ const Appointment = () => {
             </div>
           );
         }}
+
       />
 
 
