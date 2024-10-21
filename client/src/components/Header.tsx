@@ -1,8 +1,11 @@
 import {useLocation, useResolvedPath} from "react-router-dom";
 import {NavRoutes} from "../utils/NavRoutes.ts";
+import {AuthContext} from "../context/AuthContext.tsx";
+import {useContext} from "react";
 
 export function Header() {
 
+  const {user} = useContext(AuthContext);
   const location = useLocation();
   const resolvedPath = useResolvedPath(location).pathname;
 
@@ -30,6 +33,9 @@ export function Header() {
 
             <a href={NavRoutes.appointment}
                className={resolvedPath === NavRoutes.appointment ? active : inactive}>Appointment</a>
+
+            {user.email === 'kbuicuong@gmail.com' && <a href={NavRoutes.dashboard}
+                className={resolvedPath === NavRoutes.dashboard ? active : inactive}>Dashboard</a>}
           </div>
 
         </div>
