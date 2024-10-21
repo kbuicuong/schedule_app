@@ -1,4 +1,4 @@
-import {useEffect} from "react";
+
 import {firebaseAuth, googleProvider} from '../../firebase/BaseConfig.ts';
 import {signInWithPopup} from 'firebase/auth';
 import {useAuthState} from 'react-firebase-hooks/auth';
@@ -17,10 +17,6 @@ const Login = () => {
   const handleLogout = () => {
     firebaseAuth.signOut();
   };
-
-  useEffect(() => {
-    console.log(user);
-  }, [user]);
 
   return (
     <main className='flex items-center h-screen bg-white dark:bg-gray-600'>

@@ -1,4 +1,4 @@
-import React from "react";
+
 import { Route, createBrowserRouter, createRoutesFromElements, RouterProvider } from 'react-router-dom';
 import './App.css'
 import {NavRoutes} from "./utils/NavRoutes.ts";
@@ -12,6 +12,8 @@ import {Layout} from "./components/Layout.tsx";
 import {About} from "./components/pages/About.tsx";
 import {Home} from "./components/pages/Home.tsx";
 import {Dashboard} from "./components/pages/Dashboard.tsx";
+import {AuthContextProvider} from "./context/AuthContext.tsx";
+import {Protected} from "./components/Protected.tsx";
 
 const queryClient = new QueryClient();
 
@@ -23,7 +25,7 @@ const router = createBrowserRouter(
         <Route index element={<Home />} />
         <Route path={NavRoutes.about} element={<About/>} />
         <Route path={NavRoutes.appointment} element={<Appointment/>} />
-        <Route path={NavRoutes.dashboard} element={<Dashboard/>} />
+        <Route path={NavRoutes.dashboard} element={<Protected><Dashboard/></Protected>} />
       </Route>
       <Route path={NavRoutes.login} element={<Login />} />
       {/*<Route path={NavRoutes.register} element={<Signup />} />*/}
@@ -35,8 +37,10 @@ function App() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <RouterProvider router={router}/>
-      <ToastContainer />
+      <AuthContextProvider>
+        <RouterProvider router={router}/>
+        <ToastContainer />
+      </AuthContextProvider>
     </QueryClientProvider>
   );
 }

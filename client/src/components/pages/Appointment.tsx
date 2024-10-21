@@ -2,7 +2,6 @@ import {useEffect, useRef, useState} from "react";
 
 import {Scheduler} from "@aldabil/react-scheduler";
 import {
-  EventActions,
   ProcessedEvent, SchedulerRef
 } from "@aldabil/react-scheduler/types";
 import {useQueryClient, useMutation, useQuery} from "react-query";
@@ -142,7 +141,7 @@ const Appointment = () => {
             );
           }
         }}
-        eventRenderer={({event, ...props}) => {
+        eventRenderer={({event}) => {
           if (event.approved !== true) {
             return (
 
