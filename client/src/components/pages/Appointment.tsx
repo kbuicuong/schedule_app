@@ -5,13 +5,14 @@ import {
   EventActions,
   ProcessedEvent, SchedulerRef
 } from "@aldabil/react-scheduler/types";
-import {useQueryClient, useMutation} from "react-query";
+import {useQueryClient, useMutation, useQuery} from "react-query";
 import axios, {AxiosError} from "axios";
 import {toast} from "react-toastify";
 import {useAuthState} from "react-firebase-hooks/auth";
 import {firebaseAuth} from "../../firebase/BaseConfig.ts";
 import {CustomEditor} from "../CustomEditor.tsx";
 import {Button} from "@mui/material";
+import {getConfig} from "./Dashboard.tsx";
 
 export const getSchedules = async () => {
   const response = await axios.get(
@@ -36,9 +37,21 @@ const Appointment = () => {
   const queryClient = useQueryClient();
   const [user] = useAuthState(firebaseAuth);
   const calendarRef = useRef<SchedulerRef>(null);
+  const [nonWorkingDays, setNonWorkingDays] = useState<number[]>([]);
 
   const mutationDelete = useMutation((deleteId: string) => {
       return axios.delete(`http://localhost:5000/api/schedule/delete/${deleteId}`);
+    }
+  );
+
+  const {} = useQuery("configData", getConfig,
+    {
+      // staleTime: 0,
+      // cacheTime: 0,
+      // refetchInterval: 0,
+      onSuccess: (data) => {
+        setNonWorkingDays(data.nonWorkingDays);
+      }
     }
   );
 
@@ -108,7 +121,7 @@ const Appointment = () => {
           step: 60,
           cellRenderer: ({ height,day, onClick, ...props }) => {
             const weekday = day.getDay();
-            const disabled = weekday === 2;
+            const disabled = nonWorkingDays.includes(weekday);
             const restProps = disabled ? {} : props;
             return (
               <Button
@@ -119,7 +132,7 @@ const Appointment = () => {
                 }}
                 onClick={() => {
                   if (disabled) {
-                    return toast.error("Tony is not available on Tuesday");
+                    return toast.error("Tony is not available on that day.");
                   }
                   onClick();
                 }}

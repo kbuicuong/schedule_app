@@ -10,3 +10,8 @@ export type ScheduleType = {
   end: Date | string;
   approved?: boolean;
 };
+
+export type ConfigType = {
+  id: number | string;
+  nonWorkingDays: number[];
+};
