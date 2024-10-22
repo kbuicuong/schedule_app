@@ -106,7 +106,7 @@ export function Dashboard(): JSX.Element {
 
   return (
     <section className="bg-white mt-2.5">
-      <div className='container px-6 mx-auto mt-2.5'>
+      <div className='px-6 mt-2.5'>
         <FormControl sx={{m: 1, width: 300}}>
           <InputLabel id="non-workingdays-checkbox-label">Days not working</InputLabel>
           <Select
@@ -128,7 +128,7 @@ export function Dashboard(): JSX.Element {
           </Select>
         </FormControl>
       </div>
-      <div className="container px-6 py-5 mx-auto flex flex-wrap gap-2">
+      <div className="px-6 py-5 flex flex-wrap gap-2">
         {schedules && schedules.map((schedule: ScheduleType) => (
           <Schedule key={Math.random()} schedule={schedule} refetch={() => refetch()}/>
         ))}

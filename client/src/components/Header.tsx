@@ -16,14 +16,12 @@ export function Header() {
     <header>
       <nav className="bg-white shadow">
         <div
-          className="container flex items-center justify-between p-6 mx-auto text-gray-600 capitalize p-1.5 ">
-          {/*<a href="#">*/}
-          {/*  <img style={{width: "100px"}} src="/logo.png" alt=""/>*/}
-          {/*</a>*/}
+          className="flex items-center justify-between p-6 text-gray-600 capitalize ">
 
           <a href={NavRoutes.home}>
             <h3 style={{color: "#144BC8", fontWeight: "600"}}>Nails by <br/> <span style={{fontSize: "25px"}}>Tony</span></h3>
           </a>
+
           <div className='capitalize text-gray-600'>
             <a href={NavRoutes.home}
                className={resolvedPath === NavRoutes.home ? active : inactive}>Home</a>
@@ -34,7 +32,7 @@ export function Header() {
             <a href={NavRoutes.appointment}
                className={resolvedPath === NavRoutes.appointment ? active : inactive}>Appointment</a>
 
-            {user.email === 'kbuicuong@gmail.com' && <a href={NavRoutes.dashboard}
+            {user?.email === 'kbuicuong@gmail.com' && <a href={NavRoutes.dashboard}
                 className={resolvedPath === NavRoutes.dashboard ? active : inactive}>Dashboard</a>}
           </div>
 
