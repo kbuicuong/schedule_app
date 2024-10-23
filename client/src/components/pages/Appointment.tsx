@@ -115,12 +115,14 @@ const Appointment = () => {
         week={{
           weekDays: [0, 1, 2, 3, 4, 5, 6],
           weekStartOn: 1,
-          startHour: 9,
-          endHour: 20,
+          startHour: 10,
+          endHour: 19,
           step: 60,
-          cellRenderer: ({ height,day, onClick, ...props }) => {
+          cellRenderer: ({ height,day,start, onClick, ...props }) => {
             const weekday = day.getDay();
-            const disabled = nonWorkingDays.includes(weekday);
+            const hour = start.getHours();
+            const sundaySchedule = weekday === 0 && (hour === 17 || hour == 18);
+            const disabled = nonWorkingDays.includes(weekday) || sundaySchedule;
             const restProps = disabled ? {} : props;
             return (
               <Button
