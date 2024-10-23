@@ -16,7 +16,7 @@ export function Header() {
     <header>
       <nav className="bg-white shadow">
         <div
-          className="flex items-center justify-between p-6 text-gray-600 capitalize ">
+          className="flex items-center justify-between p-2.5 text-gray-600 capitalize ">
 
           <a href={NavRoutes.home}>
             <h3 style={{color: "#144BC8", fontWeight: "600"}}>Nails by <br/> <span style={{fontSize: "25px"}}>Tony</span></h3>
