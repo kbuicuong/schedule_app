@@ -13,7 +13,7 @@ app.use(express.json());
 app.use('/api', scheduleRoute);
 app.use('/api', configRoute);
 
-app.get("/*", (req: Request, res: Response) => {
+app.get("*", (req: Request, res: Response) => {
   res.sendFile(
     path.join(__dirname, "../../../client/dist/index.html"),
     function (err) {
