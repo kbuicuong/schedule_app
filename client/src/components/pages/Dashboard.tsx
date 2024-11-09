@@ -121,7 +121,7 @@ export function Dashboard(): JSX.Element {
           >
             {days.map((day) => (
               <MenuItem key={day.value} value={day.value}>
-                <Checkbox checked={nonWorkingDays.includes(day.value)}/>
+                <Checkbox checked={nonWorkingDays.includes(String(day.value))}/>
                 <ListItemText primary={day.day}/>
               </MenuItem>
             ))}

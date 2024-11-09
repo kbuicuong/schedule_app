@@ -6,9 +6,10 @@
   "scripts": {
     "dev": "vite",
     "dev:host": "vite --host",
-    "build": "tsc -b && vite build",
+    "build": "tsc -b && vite build && (cd ../server && npm install)",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "start-client": "vite start"
   },
   "dependencies": {
     "@aldabil/react-scheduler": "^2.9.5",

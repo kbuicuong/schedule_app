@@ -175,6 +175,7 @@ const Appointment = () => {
           }
           return null;
         }}
+        //@ts-ignore
         viewerExtraComponent={(fields, event) => {
           return (
             <div>
