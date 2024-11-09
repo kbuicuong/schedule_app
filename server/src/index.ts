@@ -14,14 +14,15 @@ app.use('/api', scheduleRoute);
 app.use('/api', configRoute);
 
 app.get("/*", (req: Request, res: Response) => {
-  res.sendFile(
-    path.join("../../client/dist", "index.html"),
-    function (err) {
-      if (err) {
-        res.status(500).send(err);
-      }
-    }
-  );
+  // res.sendFile(
+  //   path.join(__dirname, "../../client/dist", "index.html"),
+  //   function (err) {
+  //     if (err) {
+  //       res.status(500).send(err);
+  //     }
+  //   }
+  // );
+  res.sendFile(__dirname + '../../client/dist/index.html');
 });
 
 app.listen(config.port, () => {
