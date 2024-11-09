@@ -14,8 +14,10 @@
   "dependencies": {
     "@types/es6-promise": "^3.3.0",
     "@types/cors": "^2.8.17",
-    "dotenv": "^16.4.5",
     "@types/express": "^5.0.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.0",
     "firebase": "^10.14.0",
     "nodemon": "^3.1.7",
     "ts-node": "^10.9.2"
