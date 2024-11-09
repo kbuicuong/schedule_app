@@ -9,7 +9,7 @@
     "build": "tsc -b && vite build && (cd ../server && npm install)",
     "lint": "eslint .",
     "preview": "vite preview",
-    "start-client": "vite preview"
+    "start-client": "serve dist -s"
   },
   "dependencies": {
     "@aldabil/react-scheduler": "^2.9.5",
@@ -28,7 +28,8 @@
     "react-router-dom": "^6.26.2",
     "react-timezone-select": "^3.2.8",
     "react-toastify": "^10.0.5",
-    "rrule": "^2.8.1"
+    "rrule": "^2.8.1",
+    "serve": "^14.2.4"
   },
   "devDependencies": {
     "@eslint/js": "^9.9.0",
