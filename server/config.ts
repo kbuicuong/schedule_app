@@ -5,7 +5,7 @@ dotenv.config();
 
 const {
     PORT,
-    HOST,
+    // HOST,
     HOST_URL,
     API_KEY,
     AUTH_DOMAIN,
@@ -16,11 +16,11 @@ const {
 } = process.env;
 
 assert(PORT, 'Port is required');
-assert(HOST, 'Host is required');
+// assert(HOST, 'Host is required');
 
 export default {
     port: PORT,
-    host: HOST,
+    // host: HOST,
     hostUrl: HOST_URL,
     firebaseConfig: {
         apiKey: API_KEY,
