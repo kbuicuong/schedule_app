@@ -22,8 +22,6 @@ app.get("/*", (req: Request, res: Response) => {
       }
     }
   );
-  // res.sendFile(__dirname + '../../client/dist/index.html');
-  // console.log(__dirname);
 });
 
 app.listen(config.port, () => {
