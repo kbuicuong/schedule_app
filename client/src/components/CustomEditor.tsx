@@ -9,6 +9,7 @@ import {useMutation} from "react-query";
 import axios, {AxiosError} from "axios";
 import {SendEmail} from "../utils/SendEmail.ts";
 import {toast} from "react-toastify";
+import {getEndpoint} from "../utils/Helper.ts";
 
 interface CustomEditorProps {
   scheduler: SchedulerHelpers;
@@ -17,12 +18,12 @@ export const CustomEditor = ({ scheduler }: CustomEditorProps) => {
   const event = scheduler.edited;
 
   const mutationPost = useMutation((newSchedule: ProcessedEvent) =>
-    axios.post("http://localhost:5000/api/schedule/new", newSchedule)
+    axios.post(`${getEndpoint()}/api/schedule/new`, newSchedule)
   );
   const mutationPut = useMutation((newSchedule: ProcessedEvent) => {
     const start = new Date(newSchedule.start).toISOString();
     const end = new Date(newSchedule.end).toISOString();
-    return axios.put(`http://localhost:5000/api/schedule/update/${start}.${end}`, newSchedule);
+    return axios.put(`${getEndpoint()}/api/schedule/update/${start}.${end}`, newSchedule);
   });
 
   const [startValue, setStartValue] = useState<Dayjs | null>(dayjs(scheduler.state.start.value));

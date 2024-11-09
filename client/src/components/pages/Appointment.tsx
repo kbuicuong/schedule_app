@@ -12,10 +12,11 @@ import {firebaseAuth} from "../../firebase/BaseConfig.ts";
 import {CustomEditor} from "../CustomEditor.tsx";
 import {Button} from "@mui/material";
 import {getConfig} from "./Dashboard.tsx";
+import {getEndpoint} from "../../utils/Helper.ts";
 
 export const getSchedules = async () => {
   const response = await axios.get(
-    "http://localhost:5000/api/schedule",
+    `${getEndpoint()}/api/schedule`,
   );
   return response.data;
 };
@@ -39,7 +40,7 @@ const Appointment = () => {
   const [nonWorkingDays, setNonWorkingDays] = useState<number[]>([]);
 
   const mutationDelete = useMutation((deleteId: string) => {
-      return axios.delete(`http://localhost:5000/api/schedule/delete/${deleteId}`);
+      return axios.delete(`${getEndpoint()}/api/schedule/delete/${deleteId}`);
     }
   );
 

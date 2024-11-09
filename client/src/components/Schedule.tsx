@@ -3,6 +3,7 @@ import {useMutation} from "react-query";
 import axios, {AxiosError} from "axios";
 import {toast} from "react-toastify";
 import {SendEmail} from "../utils/SendEmail.ts";
+import {getEndpoint} from "../utils/Helper.ts";
 
 type ScheduleProps = {
   schedule: ScheduleType,
@@ -14,7 +15,7 @@ export function Schedule(props: ScheduleProps): JSX.Element {
   const {schedule, refetch} = props;
 
   const mutationDelete = useMutation((deleteId: string) => {
-      return axios.delete(`http://localhost:5000/api/schedule/delete/${deleteId}`);
+      return axios.delete(`${getEndpoint()}/api/schedule/delete/${deleteId}`);
     }
   );
 
@@ -22,7 +23,7 @@ export function Schedule(props: ScheduleProps): JSX.Element {
     const start = new Date(newSchedule.start).toISOString();
     const end = new Date(newSchedule.end).toISOString();
     const approved = {approved: true};
-    return axios.put(`http://localhost:5000/api/schedule/update/${start}.${end}`, approved);
+    return axios.put(`${getEndpoint()}/api/schedule/update/${start}.${end}`, approved);
   });
 
   const handleApprove = () => {

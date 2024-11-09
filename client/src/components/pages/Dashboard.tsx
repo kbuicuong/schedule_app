@@ -13,10 +13,11 @@ import {
   SelectChangeEvent
 } from "@mui/material";
 import {useState} from "react";
+import {getEndpoint} from "../../utils/Helper.ts";
 
 export const getSchedules = async () => {
   const response = await axios.get(
-    "http://localhost:5000/api/schedule",
+    `${getEndpoint()}/api/schedule`,
   );
 
   const dataFiltered = response.data.filter((d: ScheduleType) => d.approved !== true);
@@ -26,7 +27,7 @@ export const getSchedules = async () => {
 
 export const getConfig = async () => {
   const response = await axios.get(
-    "http://localhost:5000/api/config",
+    `${getEndpoint()}/api/config`,
   );
 
   return response.data;
@@ -82,12 +83,12 @@ export function Dashboard(): JSX.Element {
       const data = {
         nonWorkingDays: parseInt(value)
       }
-      return axios.put(`http://localhost:5000/api/config/update/1`, data);
+      return axios.put(`${getEndpoint()}/api/config/update/1`, data);
     }else{
       const data = {
         nonWorkingDays: value.map((v) => parseInt(v))
       }
-      return axios.put(`http://localhost:5000/api/config/update/1`, data);
+      return axios.put(`${getEndpoint()}/api/config/update/1`, data);
     }
   });
 
