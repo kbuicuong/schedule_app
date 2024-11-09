@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "(cd server && npm run build && npm start) & (cd client && npm run build && npm run start-client)"
+    "start": "(cd server && npm run build && npm start) & (cd client && npm run build)"
   },
 
   "keywords": [],
@@ -32,7 +32,6 @@
     "@mui/x-date-pickers": "^7.20.0",
     "axios": "^1.7.7",
     "dayjs": "^1.11.13",
-    "firebase": "^10.14.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-firebase-hooks": "^5.1.1",
