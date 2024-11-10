@@ -6,7 +6,7 @@
     "dev": "nodemon src/index.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
-    "start": "node dist/src/index.js",
+    "start": "node dist/src/index.js && ls dist",
     "lint": "eslint index.ts && eslint src/**/*.ts",
     "pretty": "prettier --write \"src/**/*.ts\""
   },
