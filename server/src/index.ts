@@ -10,6 +10,7 @@ const app: Express = express();
 
 const prodOrigins = [
   getEnvironmentVariable('ORIGIN_1'),
+  getEnvironmentVariable('ORIGIN_2'),
 ];
 const devOrigin = ['http://localhost:5173'];
 const allowedOrigins = getEnvironmentVariable('NODE_ENV') === 'production' ? prodOrigins : devOrigin;
